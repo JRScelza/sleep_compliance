@@ -131,34 +131,43 @@ for i in sub_int:
 #*******************************************************************************
 
 fitbitD = pd.read_sql('SELECT * FROM fitbit_sleep_logs', conn)
+fitbitE = pd.read_sql('SELECT * FROM fitbit_activity_summary', conn)
 position_fit = -1
 subplot_count = 111
 
 for i in sub_int:
+    fitbitD = pd.read_sql('SELECT * FROM fitbit_sleep_logs', conn)
+    position_fit = -1
+    subplot_count = 111
+    
+    
     fits = fitbitD.loc[(fitbitD['subject_id'] == i)]
     fit_range = fits['date_of_sleep_datetime']
-    fitt = fits.loc[((fit_range >= str(sub_strt_date)) & (fit_range <= str(sub_stp_date)))]
+    fit_duration = fits.loc[((fit_range >= str(sub_strt_date)) & (fit_range <= str(sub_stp_date)))]
+    fit_duration.index = range(0,len(fit_duration))
     
+    fitbit_sleep_metrics = ['minutes_asleep', 'minutes_awake', 'time_in_bed', 'restless_duration', 'total_minutes_asleep']
     
-    fitbit_duration_check = fitt['sleep_duration']
+    fitbit_duration_check = fit_duration['sleep_duration']
     counter = 0
     position_fit = position_fit + 1
-    
+        
     if  i in fitbit_duration_check <= 18000000 or fitbit_duration_check.empty:
-        compliance_list.iloc[position_fit,4] = 'FAIL'
+    #        compliance_list.iloc[position_fit,4] = 'FAIL'
+            
     else:
-        compliance_list.iloc[position_fit,4] = 'PASS'
-        x = range(0,len(fitt))
-        y = fitbit_duration_check['value']
-        plt.bar(x, y)
-        plt.title('Fitbit Summary Subject %d' % i)
-        my_xticks = withings_duration_check['title']
-        plt.xticks(x, my_xticks, rotation=45)
-        
-        subplot_count = subplot_count + 1
-        
-        plt.show()
-        
+    #       compliance_list.iloc[position_fit,4] = 'PASS'
+            
+            x = range(0,len(fitbit_sleep_metrics))
+            y = fit_duration.iloc[0][fitbit_sleep_metrics]
+            plt.bar(x, y)
+            plt.title('Fitbit Summary Subject %d' % i)
+            my_xticks = fitbit_sleep_metrics
+            plt.xticks(x, my_xticks, rotation=45)
+            
+            subplot_count = subplot_count + 1
+            
+            plt.show()
         
 
 #****************************WITHINGS*******************************************
