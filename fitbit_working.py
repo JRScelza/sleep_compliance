@@ -46,7 +46,6 @@ sub_stp_date = sub_strt_date + datetime.timedelta(days=1)
 
 
 fitbitD = pd.read_sql('SELECT * FROM fitbit_sleep_logs', conn)
-fitbitE = pd.read_sql('SELECT * FROM fitbit_activity_summary', conn)
 position_fit = -1
 subplot_count = 111
 i = 55
@@ -54,13 +53,9 @@ i = 55
 fits = fitbitD.loc[(fitbitD['subject_id'] == i)]
 fit_range = fits['date_of_sleep_datetime']
 fit_duration = fits.loc[((fit_range >= str(sub_strt_date)) & (fit_range <= str(sub_stp_date)))]
+fit_duration.index = range(0,len(fit_duration))
 
-fitq = fitbitE.loc[(fitbitE['subject_id'] == i)]
-fit_rangeq = fitq['api_data_datetime']
-fit_activity = fitq.loc[((fit_rangeq >= str(sub_strt_date)) & (fit_rangeq <= str(sub_stp_date)))]
-fit_activity.index = range(0,len(fit_activity))
-fitbit_activity_metrics = ['activity_calories', 'calories_bmr', 'calories_out']
-
+fitbit_sleep_metrics = ['minutes_asleep', 'minutes_awake', 'time_in_bed', 'restless_duration', 'total_minutes_asleep']
 
 fitbit_duration_check = fit_duration['sleep_duration']
 counter = 0
@@ -72,11 +67,11 @@ if  i in fitbit_duration_check <= 18000000 or fitbit_duration_check.empty:
 else:
 #       compliance_list.iloc[position_fit,4] = 'PASS'
         print("PASS")
-        x = range(0,len(fitbit_activity_metrics))
-        y = fit_activity.iloc[0][fitbit_activity_metrics]
+        x = range(0,len(fitbit_sleep_metrics))
+        y = fit_duration.iloc[0][fitbit_sleep_metrics]
         plt.bar(x, y)
         plt.title('Fitbit Summary Subject %d' % i)
-        my_xticks = fitbit_activity_metrics
+        my_xticks = fitbit_sleep_metrics
         plt.xticks(x, my_xticks, rotation=45)
         
         subplot_count = subplot_count + 1

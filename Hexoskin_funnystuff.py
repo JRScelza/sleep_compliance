@@ -39,7 +39,7 @@ tables = cur.fetchall()
 sub_int = [52, 53, 55, 56, 57, 58]
 now  = datetime.datetime.now()
 strt_date_temp  = datetime.datetime(now.year, now.month, now.day, hour=14)
-sub_strt_date  = strt_date_temp - datetime.timedelta(days=4)
+sub_strt_date  = strt_date_temp - datetime.timedelta(days=3)
 sub_stp_date = sub_strt_date + datetime.timedelta(days=1)
 
 
@@ -67,7 +67,7 @@ print('-------------------------------------------------------------------------
 
 hexoskinD = pd.read_sql('SELECT * FROM hexoskin_summary_metrics', conn)
 position_hex = 0
-
+subplot_count = 0
 time.sleep(1)
 
 for i in sub_int:
@@ -94,7 +94,8 @@ for i in sub_int:
         plt.figure(subplot_count)
         x = range(0,len(hexoskin_values))
         y = hexoskin_values['value']
-        plt.bar(x, y)
+        colors = ['#624ea7', 'g', 'yellow', 'k', 'maroon']
+        plt.bar(x, y, color=colors)
         plt.title('Hexoskin Summary Subject %d' % i)
         my_xticks = hexoskin_metrics['title']
         plt.xticks(x, my_xticks, rotation=45)
@@ -136,11 +137,6 @@ position_fit = -1
 subplot_count = 111
 
 for i in sub_int:
-    fitbitD = pd.read_sql('SELECT * FROM fitbit_sleep_logs', conn)
-    position_fit = -1
-    subplot_count = 111
-    
-    
     fits = fitbitD.loc[(fitbitD['subject_id'] == i)]
     fit_range = fits['date_of_sleep_datetime']
     fit_duration = fits.loc[((fit_range >= str(sub_strt_date)) & (fit_range <= str(sub_stp_date)))]
@@ -153,14 +149,15 @@ for i in sub_int:
     position_fit = position_fit + 1
         
     if  i in fitbit_duration_check <= 18000000 or fitbit_duration_check.empty:
-    #        compliance_list.iloc[position_fit,4] = 'FAIL'
+            compliance_list.iloc[position_fit,4] = 'FAIL'
             
     else:
-    #       compliance_list.iloc[position_fit,4] = 'PASS'
+            compliance_list.iloc[position_fit,4] = 'PASS'
             
             x = range(0,len(fitbit_sleep_metrics))
             y = fit_duration.iloc[0][fitbit_sleep_metrics]
-            plt.bar(x, y)
+            colors = ['#624ea7', 'g', 'yellow', 'k', 'maroon']
+            plt.bar(x, y, color=colors)
             plt.title('Fitbit Summary Subject %d' % i)
             my_xticks = fitbit_sleep_metrics
             plt.xticks(x, my_xticks, rotation=45)
@@ -202,7 +199,8 @@ for i in sub_int:
             plt.figure(subplot_count)
             x = range(0,len(withings_duration_check))
             y = withings_duration_check['value']
-            plt.bar(x, y)
+            colors = ['#624ea7', 'g', 'yellow', 'k', 'maroon']
+            plt.bar(x, y, color=colors)
             plt.title('Withings Summary Subject %d' % i)
             my_xticks = withings_duration_check['title']
             plt.xticks(x, my_xticks, rotation=45)
