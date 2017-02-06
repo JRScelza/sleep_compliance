@@ -58,10 +58,11 @@ fit_duration = fits.loc[((fit_range >= str(sub_strt_date)) & (fit_range <= str(s
 fitq = fitbitE.loc[(fitbitE['subject_id'] == i)]
 fit_rangeq = fitq['api_data_datetime']
 fit_activity = fitq.loc[((fit_rangeq >= str(sub_strt_date)) & (fit_rangeq <= str(sub_stp_date)))]
+fit_activity.index = range(0,len(fit_activity))
+fitbit_activity_metrics = ['activity_calories', 'calories_bmr', 'calories_out']
 
 
 fitbit_duration_check = fit_duration['sleep_duration']
-fitbit_activity = 
 counter = 0
 position_fit = position_fit + 1
     
@@ -71,11 +72,11 @@ if  i in fitbit_duration_check <= 18000000 or fitbit_duration_check.empty:
 else:
 #       compliance_list.iloc[position_fit,4] = 'PASS'
         print("PASS")
-        x = range(0,len(fitt))
-        y = fitbit_duration_check['value']
+        x = range(0,len(fitbit_activity_metrics))
+        y = fit_activity.iloc[0][fitbit_activity_metrics]
         plt.bar(x, y)
         plt.title('Fitbit Summary Subject %d' % i)
-        my_xticks = withings_duration_check['title']
+        my_xticks = fitbit_activity_metrics
         plt.xticks(x, my_xticks, rotation=45)
         
         subplot_count = subplot_count + 1
