@@ -23,10 +23,10 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-#pd.set_option('display.height', 2000)
+#pd.set_option('display.height', 200cd
 #pd.set_option('display.max_rows', 800)
 
-conn = pymysql.connect(host='127.0.0.1', port=3000, user='markshervey', passwd='sher2$$$', db='device_ingest')
+conn = pymysql.connect(host='127.0.0.1', port=3000, user='jeroscel', passwd='Defense43*55', db='device_ingest')
 
 cur = conn.cursor()
 
@@ -36,7 +36,7 @@ cur.execute("SHOW TABLES")
 tables = cur.fetchall()
 
 
-sub_int = [50, 52, 53, 54, 55, 56, 57, 58]
+sub_int = [52, 53, 55, 56, 57, 58]
 now  = datetime.datetime.now()
 strt_date_temp  = datetime.datetime(now.year, now.month, now.day, hour=14)
 sub_strt_date  = strt_date_temp - datetime.timedelta(days=4)
@@ -132,6 +132,7 @@ for i in sub_int:
 
 fitbitD = pd.read_sql('SELECT * FROM fitbit_sleep_logs', conn)
 position_fit = -1
+subplot_count = 111
 
 for i in sub_int:
     fits = fitbitD.loc[(fitbitD['subject_id'] == i)]
@@ -147,6 +148,17 @@ for i in sub_int:
         compliance_list.iloc[position_fit,4] = 'FAIL'
     else:
         compliance_list.iloc[position_fit,4] = 'PASS'
+        x = range(0,len(fitt))
+        y = fitbit_duration_check['value']
+        plt.bar(x, y)
+        plt.title('Fitbit Summary Subject %d' % i)
+        my_xticks = withings_duration_check['title']
+        plt.xticks(x, my_xticks, rotation=45)
+        
+        subplot_count = subplot_count + 1
+        
+        plt.show()
+        
         
 
 #****************************WITHINGS*******************************************
