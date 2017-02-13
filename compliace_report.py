@@ -251,9 +251,55 @@ print('        ')
 #
 #s = compliance_list.style.applymap(color_fail_red))
 
-print(compliance_list)
 #print(hexoskin_Nulls_check)
+
+#*********************************OURA****************************************
+#***********SLEEP DURATION COMPLIANCE AND PLOTTING *****************************
+#*******************************************************************************
         
+   
+ouraD = pd.read_sql('SELECT * FROM oura_sleep_summary', conn)
+position_oura = -1
+subplot_count = 211    
+    
+for i in sub_int:
+    ouras = ouraD.loc[(ouraD['subject_id'] == i)]
+    oura_range = ouras['bedtime_start_datetime']
+    ourat = ouras.loc[((oura_range >= str(sub_strt_date)) & (oura_range <= str(sub_stp_date)))]
+    ourat.index = range(0,len(ourat))
+    
+    oura_sleep_metrics = ['rem', 'awake', 'total']
+    
+    counter = 0
+    position_oura = position_oura + 1
+    
+        
+    if ourat.empty:
+            compliance_list.iloc[position_oura,5] = 'FAIL'
+            print('*******NO DATA TO PLOT OURA FOR SUBJECT %s*********' % i)
+    else:
+            compliance_list.iloc[position_oura,5] = 'PASS'
+            
+            oura_duration = ourat.iloc[0]['total']
+            plt.figure(subplot_count)
+            y = ourat.iloc[0][oura_sleep_metrics]
+            x = range(0,(len(y)))
+            colors = ['#624ea7', 'g', 'yellow', 'k', 'maroon']
+            plt.bar(x, y, color=colors)
+            plt.title('OURA Summary Subject %d' % i)
+            my_xticks = oura_sleep_metrics
+            plt.xticks(x, my_xticks, rotation=45)
+            
+            subplot_count = subplot_count + 1
+            
+            plt.show()
+    sub_strt_date  = sub_strt_date + datetime.timedelta(days=1)
+    sub_stp_date = sub_strt_date + datetime.timedelta(days=1)
+        
+
+
+print(compliance_list)
+
 cur.close()
 conn.close()
 
