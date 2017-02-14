@@ -41,7 +41,7 @@ sub_int = [52, 53, 55, 56, 57, 58]
 
 now  = datetime.datetime.now()
 strt_date_temp  = datetime.datetime(now.year, now.month, now.day, hour=14)
-sub_strt_date  = strt_date_temp - datetime.timedelta(days=4)
+sub_strt_date  = strt_date_temp - datetime.timedelta(days=3)
 sub_stp_date = sub_strt_date + datetime.timedelta(days=1)
 
 
